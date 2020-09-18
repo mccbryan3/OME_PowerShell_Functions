@@ -29,7 +29,7 @@ This function will retrieve device details from the OME API based on DeviceName 
 
 DeviceName is the default parameter set and will be prompted if not provided. You may also provide the service tag to the function which will negate the need for the default parameter set.
 
-### SYNTAX
+SYNTAX
 
 Get-OMEDevice.ps1 [-IPAddress] <String> [-DeviceName] <String> [-DeviceSVCTag] <String> [-Credentials] <PSCredentials>
 

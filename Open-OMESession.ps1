@@ -53,5 +53,5 @@ try {
     }
 
 } catch {
-    Write-Error "Error Debug: $_"
+    Write-Error "Error Debug: $_"; exit
 }

@@ -10,10 +10,6 @@ param(
     [pscredential] $Credentials
 )
 
-if($SVCTag -and $DeviceName) {
-    "Error: Cannot filter both on device name and service tag.`n`nPlease specify one or the other"
-}
-
 if($DeviceName) {
     $device_filter = "DeviceName"
     $filter_text = $DeviceName
@@ -21,8 +17,6 @@ if($DeviceName) {
     $device_filter = "DeviceServiceTag"
     $filter_text = $DeviceSVCTag
 }
-
-
 
 function Set-CertPolicy() {
 ## Trust all certs - for sample usage only
@@ -42,7 +36,7 @@ public class TrustAllCertsPolicy : ICertificatePolicy {
         [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
     }
     Catch {
-        # Write-Error "Unable to add type for cert policy"
+        "$Error[0]`n`nUnable to add type for cert policy";exit
     }
 
 }
@@ -60,7 +54,7 @@ try {
     $DevResp = Invoke-WebRequest -Uri $DeviceUrl -UseBasicParsing -Method Get -Headers $Headers -ContentType $Type
     $PSContent_Devices = ($DevResp | ConvertFrom-Json).Value
 } catch { 
-    Write-Error "Error: $_"
+    Write-Error "Error: $Error[0]"
 }
 
 foreach ($PSContent_Device  in $PSContent_Devices) {
@@ -72,10 +66,10 @@ foreach ($PSContent_Device  in $PSContent_Devices) {
         $DevResp = Invoke-WebRequest -Uri $DeviceInventoryUrl -UseBasicParsing -Method Get -Headers $Headers -ContentType $Type
         $Network_DeviceMac = (($DevResp.Content | ConvertFrom-Json).InventoryInfo.Ports).Partitions.CurrentMacAddress
     } catch { 
-        Write-Error "Error: $_"
+        Write-Error "Error: $Error[0]"
     }
 
-    $PSContent_Device | Select DeviceName,Model, `
+    $PSContent_Device | Select-Object DeviceName,Model, `
         @{N="DnsName";E={$_.DeviceManagement.DnsName}},`
         @{N="iDracAddress";E={$_.DeviceManagement.NetworkAddress}}, `
         @{N="iDracMac";E={$_.DeviceManagement.MacAddress}},  `

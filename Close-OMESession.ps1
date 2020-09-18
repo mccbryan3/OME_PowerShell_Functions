@@ -15,5 +15,5 @@ try {
     $SessionUrl  = "https://$($IpAddress)/api/SessionService/Sessions"
     $SessClose = Invoke-WebRequest -Uri "$SessionUrl`(`'$SessionId`'`)" -Method Delete -Headers $Headers -ContentType $Type
 } catch {
-    "Error: $_"
+    "Error: Could not close session`n`n$Error[0]"
 }
